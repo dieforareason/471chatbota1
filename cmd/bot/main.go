@@ -13,7 +13,9 @@ import (
 func main() {
 	godotenv.Load()
 	scanner := bufio.NewScanner(os.Stdin)
-	fmt.Println("Golang LLM Bot is running. Type a message:")
+
+	fmt.Println("GOLANG LLM Bot is running. Type a message:")
+
 	for scanner.Scan() {
 		input := scanner.Text()
 		response, err := bot.HandleMessage(input)

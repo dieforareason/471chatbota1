@@ -6,5 +6,6 @@ import (
 )
 
 func HandleMessage(input string) (string, error) {
-	return llm.SendToGroq(input)
-} 
+	// Send both system prompt and user input
+	return llm.SendToGroq(DefaultPrompt, input)
+}

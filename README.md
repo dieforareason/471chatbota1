@@ -1,6 +1,21 @@
-# Golang LLM Bot
+# BASIC GOLANG LLM Bot
 
-A simple Go bot that reads user input, sends it to Groq LLM API, and prints the response.
+
+## Prerequisites
+
+1. **Go Installation**
+   - Go version 1.21 or higher is required
+   - Download Go from [official website](https://go.dev/dl/)
+   - Verify installation by running: `go version`
+
+2. **Environment Setup**
+   - A Groq API account and API key
+   - Text editor or IDE of your choice
+   - Git (optional, for version control)
+
+3. **System Requirements**
+   - Any operating system that supports Go (Windows, macOS, or Linux)
+   - Internet connection (required for API calls to Groq)
 
 ## Setup
 
@@ -9,14 +24,9 @@ A simple Go bot that reads user input, sends it to Groq LLM API, and prints the 
 GROQ_API_KEY=your_groq_api_key
 ```
 
-2. Initialize the Go module:
+2. Install dependencies:
 ```bash
-go mod init golang-llm-bot
-```
-
-3. Install dependencies:
-```bash
-go get
+go mod download
 ```
 
 ## Usage
@@ -26,10 +36,11 @@ Run the bot:
 go run cmd/bot/main.go
 ```
 
-The bot will start and prompt you for input. Type your message and press Enter to get a response from the LLM.
+The bot will start and prompt you for input. Type your message and press Enter to get a response from MELATI.
 
 ## Project Structure
 
 - `cmd/bot/main.go`: Entry point for the bot
 - `internal/llm/client.go`: Client code for interacting with Groq LLM API
 - `internal/bot/handler.go`: Bot logic for processing input and sending to LLM
+- `internal/bot/prompts.go`: System prompt configuration

@@ -8,7 +8,7 @@ import (
 	"github.com/go-resty/resty/v2"
 )
 
-func SendToGroq(prompt string) (string, error) {
+func SendToGroq(systemPrompt string, userInput string) (string, error) {
 	apiKey := os.Getenv("GROQ_API_KEY")
 	client := resty.New()
 	resp, err := client.R().
@@ -16,7 +16,8 @@ func SendToGroq(prompt string) (string, error) {
 		SetHeader("Content-Type", "application/json").
 		SetBody(map[string]interface{}{
 			"messages": []map[string]string{
-				{"role": "user", "content": prompt},
+				{"role": "system", "content": systemPrompt},
+				{"role": "user", "content": userInput},
 			},
 			"model": "llama3-8b-8192",
 		}).
