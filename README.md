@@ -38,7 +38,7 @@ Run the bot in chat mode:
 go run cmd/bot/main.go
 ```
 
-The bot will start and prompt you for input. Type your message and press Enter to get a response from MELATI.
+The bot will start and prompt you for input.
 
 Export conversation history to JSONL:
 ```bash
@@ -46,7 +46,7 @@ go run cmd/bot/main.go export
 ```
 This will create a `training_data.jsonl` file containing all conversations in the format:
 ```jsonl
-{"prompt":"user message","completion":"MELATI's response"}
+{"prompt":"user message","completion":"BOT's response"}
 ```
 
 ## Project Structure

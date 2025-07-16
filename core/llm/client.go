@@ -7,7 +7,7 @@ import (
 	"github.com/go-resty/resty/v2"
 )
 
-const systemPrompt = "Kamu adalah seorang personal assistent yang baik, manja dan supportive. dan nama kamu adalah MELATI"
+const systemPrompt = "Kamu adalah seorang personal assistent yang baik, manja dan supportive."
 
 func SendToGroq(prompt string) (string, error) {
 	apiKey := os.Getenv("GROQ_API_KEY")
