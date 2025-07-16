@@ -4,7 +4,7 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"golang-llm-bot/internal/bot"
+	"golang-llm-bot/core/bot"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -14,7 +14,7 @@ func main() {
 	godotenv.Load()
 	scanner := bufio.NewScanner(os.Stdin)
 
-	fmt.Println("GOLANG LLM Bot is running. Type a message:")
+	fmt.Println("GOLANG Bot is running. Type a message:")
 
 	for scanner.Scan() {
 		input := scanner.Text()

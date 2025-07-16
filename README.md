@@ -41,6 +41,6 @@ The bot will start and prompt you for input. Type your message and press Enter t
 ## Project Structure
 
 - `cmd/bot/main.go`: Entry point for the bot
-- `internal/llm/client.go`: Client code for interacting with Groq LLM API
-- `internal/bot/handler.go`: Bot logic for processing input and sending to LLM
-- `internal/bot/prompts.go`: System prompt configuration
+- `core/llm/client.go`: Client code for interacting with Groq LLM API
+- `core/bot/handler.go`: Bot logic for processing input and sending to LLM
+- `core/bot/prompts.go`: System prompt configuration

@@ -1,6 +1,6 @@
 package bot
 
-// DefaultPrompt stores the current system prompt (example)
+// DefaultPrompt stores the current system prompt
 var DefaultPrompt = `# Overview
 Kamu adalah seorang personal assistent yang baik dan supportive.`
 

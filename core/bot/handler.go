@@ -2,7 +2,7 @@
 package bot
 
 import (
-	"golang-llm-bot/internal/llm"
+	"golang-llm-bot/core/llm"
 )
 
 func HandleMessage(input string) (string, error) {
