@@ -1,57 +1,88 @@
-// core/llm/client.go
+// Package llm provides functionality for interacting with the Groq LLM API
 package llm
 
 import (
-	"os"
+	"context"
+	"fmt"
+	"time"
+
+	"golang-llm-sqlite-bot/core/config"
 
 	"github.com/go-resty/resty/v2"
 )
 
-const systemPrompt = "Kamu adalah seorang personal assistent yang baik, manja dan supportive."
+// Client defines the interface for LLM interactions
+type Client interface {
+	SendMessage(ctx context.Context, prompt string) (string, error)
+}
 
-func SendToGroq(prompt string) (string, error) {
-	apiKey := os.Getenv("GROQ_API_KEY")
-	client := resty.New()
+// GroqClient implements the LLM Client interface for Groq's API
+type GroqClient struct {
+	client *resty.Client
+	config *config.Config
+}
 
-	resp, err := client.R().
-		SetHeader("Authorization", "Bearer "+apiKey).
+// Message represents a chat message
+type Message struct {
+	Role    string `json:"role"`
+	Content string `json:"content"`
+}
+
+// ChatResponse represents the API response structure
+type ChatResponse struct {
+	Choices []struct {
+		Message struct {
+			Content string `json:"content"`
+		} `json:"message"`
+	} `json:"choices"`
+}
+
+// NewGroqClient creates a new Groq API client with retry middleware
+func NewGroqClient(cfg *config.Config) *GroqClient {
+	client := resty.New().
+		SetRetryCount(3).
+		SetRetryWaitTime(1*time.Second).
+		SetRetryMaxWaitTime(5*time.Second).
+		SetTimeout(cfg.RequestTimeout).
+		SetHeader("Authorization", fmt.Sprintf("Bearer %s", cfg.GroqAPIKey)).
+		AddRetryCondition(func(r *resty.Response, err error) bool {
+			return err != nil || r.StatusCode() >= 500
+		})
+
+	return &GroqClient{
+		client: client,
+		config: cfg,
+	}
+}
+
+// SendMessage sends a message to the Groq API and returns the response
+func (c *GroqClient) SendMessage(ctx context.Context, prompt string) (string, error) {
+	messages := []Message{
+		{Role: "system", Content: c.config.SystemPrompt},
+		{Role: "user", Content: prompt},
+	}
+
+	var result ChatResponse
+	resp, err := c.client.R().
+		SetContext(ctx).
 		SetHeader("Content-Type", "application/json").
 		SetBody(map[string]interface{}{
-			"messages": []map[string]string{
-				{
-					"role":    "system",
-					"content": systemPrompt,
-				},
-				{
-					"role":    "user",
-					"content": prompt,
-				},
-			},
-			"model": "llama3-8b-8192",
+			"messages": messages,
+			"model":    c.config.ModelName,
 		}).
-		SetResult(&struct {
-			Choices []struct {
-				Message struct {
-					Content string `json:"content"`
-				} `json:"message"`
-			} `json:"choices"`
-		}{}).
+		SetResult(&result).
 		Post("https://api.groq.com/openai/v1/chat/completions")
 
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("failed to send message to Groq: %w", err)
 	}
 
-	result := resp.Result().(*struct {
-		Choices []struct {
-			Message struct {
-				Content string `json:"content"`
-			} `json:"message"`
-		} `json:"choices"`
-	})
+	if !resp.IsSuccess() {
+		return "", fmt.Errorf("API request failed with status %d: %s", resp.StatusCode(), resp.String())
+	}
 
 	if len(result.Choices) == 0 {
-		return "No response", nil
+		return "", fmt.Errorf("no response choices returned from API")
 	}
 
 	return result.Choices[0].Message.Content, nil
