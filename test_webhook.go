@@ -14,7 +14,7 @@ func main() {
 		"event": "message_received",
 		"data": map[string]interface{}{
 			"key": map[string]interface{}{
-				"remoteJid": "628984485449@s.whatsapp.net",
+				"remoteJid": "yournumber@s.whatsapp.net", //your number with @s.whatsapp.net
 			},
 			"message": map[string]interface{}{
 				"conversation": "Hello bot",
