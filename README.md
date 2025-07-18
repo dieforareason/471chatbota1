@@ -1,60 +1,126 @@
-# BASIC GOLANG LLM Bot
+# LLM Chatbot with WhatsApp Integration
+
+A Golang-based chatbot that uses Groq LLM API for processing messages and can interact through both CLI and WhatsApp interfaces.
+
+## Features
+
+- CLI-based chat interface
+- WhatsApp integration via webhook
+- Groq LLM API integration
+- SQLite message history storage
+- Multi-interface support (CLI and WhatsApp)
 
 ## Prerequisites
 
-1. **Go Installation**
-   - Go version 1.21 or higher is required
-   - Download Go from [official website](https://go.dev/dl/)
-   - Verify installation by running: `go version`
+- Go 1.19 or higher
+- SQLite
+- Groq API Key
+- WhatsApp API Server (go-whatsapp-web-multidevice) ( https://github.com/aldinokemal/go-whatsapp-web-multidevice )
 
-2. **Environment Setup**
-   - A Groq API account and API key
-   - Text editor or IDE of your choice
-   - Git (optional, for version control)
-   - SQLite database (can be managed with DBeaver or similar tool)
+## Installation
 
-3. **System Requirements**
-   - Any operating system that supports Go (Windows, macOS, or Linux)
-   - Internet connection (required for API calls to Groq)
-
-## Setup
-
-1. Create a `.env` file with your Groq API key:
-```
-GROQ_API_KEY=your_groq_api_key
-```
-
-2. Install dependencies:
+1. Clone the repository:
 ```bash
-go mod download
+git clone <repository-url>
+cd 471chatbota1
 ```
 
-3. Configure database path in `core/db/database.go` to point to your SQLite database file.
+2. Copy the environment file and configure it:
+```bash
+vi .env
+```
+
+3. Set your Groq API key in the .env file:
+```
+GROQ_API_KEY=your-api-key-here
+```
 
 ## Usage
 
-Run the bot in chat mode:
+### CLI Mode
+
+Run the CLI bot:
 ```bash
 go run cmd/bot/main.go
 ```
 
-The bot will start and prompt you for input.
+### WhatsApp Mode
 
-Export conversation history to JSONL:
+1. First, set up and run the WhatsApp API server (go-whatsapp-web-multidevice):
 ```bash
-go run cmd/bot/main.go export
-```
-This will create a `training_data.jsonl` file containing all conversations in the format:
-```jsonl
-{"prompt":"user message","completion":"BOT's response"}
+# In WSL or your preferred environment
+./whatsapp-api --webhook="http://YOUR_WINDOWS_IP:4444/webhook/wa"
 ```
 
-## Project Structure
+2. Run the webhook server:
+```bash
+go run cmd/wabot/main.go
+```
 
-- `cmd/bot/main.go`: Entry point for the bot
-- `core/llm/client.go`: Client code for interacting with Groq LLM API
-- `core/bot/handler.go`: Bot logic for processing input and sending to LLM
-- `core/bot/prompts.go`: System prompt configuration
-- `core/db/database.go`: SQLite database initialization
-- `core/db/logger.go`: Conversation logging functionality
-- `core/db/export.go`: JSONL export functionality
+3. Send a message to your connected WhatsApp number to interact with the bot.
+
+### Configuration
+
+The bot can be configured through environment variables:
+
+- `GROQ_API_KEY`: Your Groq API key
+- `SYSTEM_PROMPT`: Custom system prompt for the LLM
+- `MODEL_NAME`: LLM model name
+- `REQUEST_TIMEOUT`: API request timeout
+- `DB_PATH`: SQLite database path
+
+## Architecture
+
+The project follows a clean architecture pattern:
+
+```
+.
+├── cmd/
+│   ├── bot/      # CLI bot entry point
+│   └── wabot/    # WhatsApp bot entry point
+├── core/
+│   ├── bot/      # Bot logic and handlers
+│   ├── config/   # Configuration management
+│   ├── db/       # Database operations
+│   └── llm/      # LLM client implementation
+```
+
+### WhatsApp Integration
+
+The bot integrates with WhatsApp through a webhook server that:
+1. Receives messages from WhatsApp API
+2. Processes them using Groq LLM
+3. Sends responses back to WhatsApp
+
+Webhook payload format:
+```json
+{
+    "chat_id": "1234567890",
+    "from": "1234567890@s.whatsapp.net",
+    "message": {
+        "text": "Hello bot!",
+        "id": "message-id",
+        "replied_id": "",
+        "quoted_message": ""
+    },
+    "pushname": "User",
+    "sender_id": "1234567890",
+    "timestamp": "2025-07-17T10:03:34Z"
+}
+```
+
+## Development
+
+### Running Tests
+
+```bash
+go test ./...
+```
+
+### Building
+
+Build both CLI and WhatsApp bots:
+```bash
+go build -o bin/bot cmd/bot/main.go
+go build -o bin/wabot cmd/wabot/main.go
+```
