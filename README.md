@@ -64,10 +64,23 @@ go run cmd/wabot/main.go
 The bot can be configured through environment variables:
 
 - `GROQ_API_KEY`: Your Groq API key
-- `SYSTEM_PROMPT`: Custom system prompt for the LLM
+- `DEFAULT_PROMPT`: Custom system prompt for the LLM (optional)
 - `MODEL_NAME`: LLM model name
 - `REQUEST_TIMEOUT`: API request timeout
 - `DB_PATH`: SQLite database path
+
+#### Prompt Customization
+
+The bot uses a default system prompt defined in `core/config/prompts.go`. You can customize the prompt in two ways:
+
+1. Set the `DEFAULT_PROMPT` environment variable:
+```bash
+DEFAULT_PROMPT="You are a helpful assistant that..."
+```
+
+2. Modify the `DefaultPrompt` constant in `core/config/prompts.go` for a permanent change.
+
+The default prompt includes multiple traits to define the assistant's behavior, making it easy to adjust the bot's personality and communication style.
 
 ## Architecture
 
