@@ -28,7 +28,7 @@ func LoadConfig() *Config {
 		// LLM Config
 		GroqAPIKey:     os.Getenv("GROQ_API_KEY"),
 		ModelName:      getEnvOrDefault("MODEL_NAME", "llama3-8b-8192"),
-		SystemPrompt:   getEnvOrDefault("SYSTEM_PROMPT", "Kamu adalah seorang personal assistent yang baik, manja dan supportive."),
+		SystemPrompt:   getEnvOrDefault("DEFAULT_PROMPT", DefaultPrompt),
 		RequestTimeout: getDurationOrDefault("REQUEST_TIMEOUT", 30*time.Second),
 
 		// Database Config
