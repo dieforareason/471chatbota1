@@ -30,7 +30,7 @@ func main() {
 	}
 
 	// Send request to webhook
-	resp, err := http.Post("http://localhost:8080/webhook/wa", "application/json", bytes.NewReader(jsonData))
+	resp, err := http.Post("http://localhost:4444/webhook/wa", "application/json", bytes.NewReader(jsonData))
 	if err != nil {
 		fmt.Printf("Error sending request: %v\n", err)
 		return
